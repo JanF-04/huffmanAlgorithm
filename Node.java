@@ -1,7 +1,5 @@
 package de.jan.HuffmanAlgorithm;
 
-import de.jan.HuffmanAlgorithm.Utils;
-
 public class Node implements Cloneable {
 	char key;
 	int value;
