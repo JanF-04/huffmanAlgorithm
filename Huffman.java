@@ -17,7 +17,7 @@ public class Huffman {
 			try {
 				charCounter = charCounterMap.get(ch);
 				charCounter++;
-			} catch (NullPointerException npe) {
+			} catch (NullPointerException NPE) {
 				charCounter = 1;
 			}
 			
@@ -74,15 +74,21 @@ public class Huffman {
         	stringResult += HashMapDict.get(ch);
         }
         
-        // PRINTS THE RESULT
-//        System.out.println(result);
+        byte [] byteArray = Utils.stringToBits(stringResult);
         
-        CodingData result = new CodingData(mainNode, stringResult);
+        // PRINTS THE STRING ARRAY AND BIT ARRAY
+//        System.out.println(stringResult);
+//        for (byte b : byteArray) {
+//        	System.out.println(Integer.toBinaryString(b));
+//        }
+        
+        CodingData result = new CodingData(mainNode, byteArray);
         
 		return result;
 	}
 	
 	public static String decode(CodingData c) {
+		
 		return null;
 	}
 	
