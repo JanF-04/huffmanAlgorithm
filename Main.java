@@ -7,15 +7,9 @@ import java.io.IOException;
 
 public class Main {
 
-<<<<<<< Updated upstream
 	public static void main(String[] args) throws FileNotFoundException, IOException {
 
 		String filename = "C:\\filename.bin";
-=======
-	public static void main(String[] args) {
-		String code = Huffman.code("Dieser Test zeigt, ob`s funktioniert. Und wenn ich mich nicht täusche, sollte der Code umso mehr Zeichen wir haben umso effektiver werden!").getCompressed();
-		System.out.println(code);
->>>>>>> Stashed changes
 		
 	    File myObj = new File(filename);
 	    if (myObj.createNewFile()) {
