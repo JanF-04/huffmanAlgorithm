@@ -3,19 +3,23 @@ package de.jan.HuffmanAlgorithm;
 public class CodingData {
 
 	private Node tree;
-	private byte [] compressed;
+	private BitArray data;
 	
 	public Node getTree() {
 		return tree;
 	}
 
-	public byte [] getCompressed() {
-		return compressed;
+	public BitArray getData() {
+		return data;
 	}
 
-	public CodingData(Node t, byte [] c) {
+	public CodingData(Node t, BitArray d) {
 		tree = t;
-		compressed = c;
+		data = d;
 	}
 	
+	public CodingData(Node t, byte [] b) {
+		tree = t;
+		data = new BitArray(b);
+	}
 }

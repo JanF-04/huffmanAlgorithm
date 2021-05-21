@@ -1,15 +1,15 @@
 package de.jan.HuffmanAlgorithm;
 
-public class Node implements Cloneable {
-	char key;
-	int value;
-	Node zero = null;
-	Node one = null;
+import java.io.Serializable;
+import java.util.ArrayList;
+
+public class Node implements Serializable {
 	
-    public Object clone() throws CloneNotSupportedException
-    {
-        return super.clone();
-    }
+	private static final long serialVersionUID = 5209108916202433809L;
+	private char key;
+	private int value;
+	private Node zero = null;
+	private Node one = null;
 	
 	public Node(Node o, Node z, int v) {
 		zero = z;
@@ -20,33 +20,6 @@ public class Node implements Cloneable {
 	public Node(int v, char k) {
 		value = v;
 		key = k;
-	}
-	
-	public void treePrinter() {
-		if (this.isSheet()) {
-			System.out.println(String.valueOf(value) + ":" + String.valueOf(key));
-		} else {
-			System.out.println(String.valueOf(value));
-			zero.treePrinter(1);
-			one.treePrinter(1);
-		}
-	}
-
-	public void treePrinter(int number) {
-		if (this.isSheet()) {
-			for (int i = 0; i < number; i++) {
-				System.out.print("-");
-			}
-			System.out.println(String.valueOf(value) + ":" + String.valueOf(key));
-		} else {
-			for (int i = 0; i < number; i++) {
-				System.out.print("-");
-			}
-			System.out.println(String.valueOf(value));
-			number++;
-			zero.treePrinter(number);
-			one.treePrinter(number);
-		}
 	}
 		
 	public int getValue() {
@@ -64,33 +37,58 @@ public class Node implements Cloneable {
 	public Node getOne() {
 		return one;
 	}
+	
+	public void treePrinter() {
+		if (this.isLeaf()) {
+			System.out.println(String.valueOf(value) + ":" + String.valueOf(key));
+		} else {
+			System.out.println(String.valueOf(value));
+			zero.treePrinter(1);
+			one.treePrinter(1);
+		}
+	}
 
-	public String [] getAllPaths() {
-		if (this.isSheet()) {
+	public void treePrinter(int number) {
+		if (this.isLeaf()) {
+			for (int i = 0; i < number; i++) {
+				System.out.print("-");
+			}
+			System.out.println(String.valueOf(value) + ":" + String.valueOf(key));
+		} else {
+			for (int i = 0; i < number; i++) {
+				System.out.print("-");
+			}
+			System.out.println(String.valueOf(value));
+			number++;
+			zero.treePrinter(number);
+			one.treePrinter(number);
+		}
+	}
+
+	public ArrayList<BitArray> getAllPaths() {
+		if (this.isLeaf()) {
 			return null;
 		} else {
-			String [] allZeroPaths = zero.getAllPaths("0");
-			String [] allOnePaths = one.getAllPaths("1");
-			String [] allPaths = Utils.addArrays(allOnePaths, allZeroPaths);
+			ArrayList<BitArray> allPaths = new ArrayList<>();
+			allPaths.addAll(zero.getAllPaths(new BitArray(false)));
+			allPaths.addAll(one.getAllPaths(new BitArray(true)));
 			return allPaths;
 		}
 	}
 
-	public String [] getAllPaths(String path) {
-		String [] allSubPaths;
-		if (this.isSheet()) {
-			allSubPaths = new String[1];
-			allSubPaths[0] = path;
-			return allSubPaths.clone();
+	public ArrayList<BitArray> getAllPaths(BitArray path) {
+		ArrayList<BitArray> allSubPaths = new ArrayList<>();
+		if (this.isLeaf()) {
+			allSubPaths.add(path);
+			return allSubPaths;
 		} else {
-			String [] allSubZeroPaths = zero.getAllPaths(path + "0");
-			String [] allSubOnePaths = one.getAllPaths(path + "1");
-			allSubPaths = Utils.addArrays(allSubOnePaths, allSubZeroPaths);
+			allSubPaths.addAll(zero.getAllPaths(new BitArray(path, false)));
+			allSubPaths.addAll(one.getAllPaths(new BitArray(path, true)));
 			return allSubPaths;
 		}
 	}
 	
-	public boolean isSheet() {
+	public boolean isLeaf() {
 		if (zero == null && one == null) {
 			return true;
 		}

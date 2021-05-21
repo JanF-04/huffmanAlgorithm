@@ -66,60 +66,64 @@ public class Huffman {
 //        mainNode.treePrinter();
 //        System.out.println("-------------------------------------");
         
-        HashMap<Character, String> HashMapDict = Huffman.createHashMapDict(mainNode);
+        HashMap<Character, BitArray> HashMapDict = Huffman.createHashMapDict(mainNode);
         
-        String stringResult = "";
+        BitArray finalBitArray = new BitArray();
         
         for (char ch : str.toCharArray()) {
-        	stringResult += HashMapDict.get(ch);
+        	finalBitArray.append(HashMapDict.get(ch));
         }
         
-        byte [] byteArray = Utils.stringToBits(stringResult);
-        
-        // PRINTS THE STRING ARRAY AND BIT ARRAY
-//        System.out.println(stringResult);
-//        for (byte b : byteArray) {
-//        	System.out.println(Integer.toBinaryString(b));
-//        }
-        
-        CodingData result = new CodingData(mainNode, byteArray);
+        CodingData result = new CodingData(mainNode, finalBitArray);
         
 		return result;
 	}
 	
 	public static String decode(CodingData c) {
-		
-		return null;
+		BitArray compressedBitArray = c.getData();
+		String result = "";
+		Node tree = c.getTree();
+		Node temp = tree;
+		for (int i = 0; i < compressedBitArray.size(); i++) {
+//			System.out.print(i);
+//			System.out.print(" - ");
+//			System.out.println(compressedBitArray.getBit(i));
+			if (compressedBitArray.getBit(i) == false) {
+				temp = temp.getZero();
+			} else if (compressedBitArray.getBit(i) == true) {
+				temp = temp.getOne();
+			}
+			if (temp.isLeaf()) {
+//				System.out.println(temp.getKey());
+				result += temp.getKey();
+				temp = tree;
+			}
+		}
+//		System.out.println(result);
+		return result;
 	}
 	
-	public static HashMap<Character, String> createHashMapDict(Node node) {
-		HashMap<Character, String> hashMapDict = new HashMap<Character, String>();
-		char zero = "0".charAt(0);
-		char one = "1".charAt(0);
-		Node subClone;
-		String path;
-		if (!node.isSheet()) {
-			String [] allPaths = node.getAllPaths();
-			for (int i = 0; i < allPaths.length; i++) {
-				try {
-					subClone = (Node) node.clone();
-				} catch (CloneNotSupportedException CNSE) {
-					System.out.println(CNSE);
-					return null;
-				}
-				path = allPaths[i];
+	public static HashMap<Character, BitArray> createHashMapDict(Node root) {
+		HashMap<Character, BitArray> hashMapDict = new HashMap<Character, BitArray>();
+		Node temp;
+		BitArray path;
+		if (!root.isLeaf()) {
+			ArrayList<BitArray> allPaths = root.getAllPaths();
+			for (int i = 0; i < allPaths.size(); i++) {
+				temp = root;
+				path = allPaths.get(i);
 				// PRINTS ALL PATHS
 //				System.out.println(allPaths[i]);
-				for (char ch : allPaths[i].toCharArray()) {
-					if (ch == zero) {
-						subClone = subClone.getZero();
-					} else if (ch == one) {
-						subClone = subClone.getOne();
+				for (int j = 0; j < path.size(); j++) {
+					if (path.getBit(j)) {
+						temp = temp.getOne();
+					} else {
+						temp = temp.getZero();
 					}
 				}
 				// PRINT KEYS AND PATHS
 //				System.out.println("Key: "+ subClone.getKey() + " | path: " + path);
-				hashMapDict.put(subClone.getKey(), path);
+				hashMapDict.put(temp.getKey(), path);
 			}
 		}
 		return hashMapDict;
