@@ -13,18 +13,25 @@ import java.util.Scanner;
 // TODO: input stream --> doesnt work
 
 public class Main {
-
+	
 	public static void main(String[] args) throws FileNotFoundException, IOException {
 		
 		while (true) {
 			@SuppressWarnings("resource")
 			Scanner sc = new Scanner(System.in);
-			System.out.println("Do you want to exit / code / encode? ( exit / c / e ):");
+			System.out.println("Do you want to exit / code / decode? ( exit / c / d ):");
 			String ce = sc.nextLine();
 			if (ce.toUpperCase().equals("C")) {
 				
 				System.out.println("Please enter the string you want to code:");
 				String code = sc.nextLine();
+				
+				if (code.length() == 1) {
+					System.out.println("String length has to be higher than one!");
+					System.out.println("\n-------------------------------------\n");
+					continue;
+				}
+				
 				System.out.println("Please enter the filename for the tree and binary File:");
 				String filename = sc.nextLine();
 				String dir = "huffmanAlgorithmFiles\\" + filename + "\\";
@@ -81,7 +88,7 @@ public class Main {
 //				System.out.println(result.getData().remainder());
 //				result.getTree().treePrinter();
 //				System.out.println(result.getData());
-			} else if (ce.toUpperCase().equals("E")) {
+			} else if (ce.toUpperCase().equals("D")) {
 				
 				System.out.println("Please enter the filename for the tree and binary File:");
 				String filename = sc.nextLine();
@@ -89,16 +96,18 @@ public class Main {
 				String binFilename =  dir + filename + ".bin";
 				String treeFilename = dir + filename + ".tree";
 				
-				byte[] data;
-				Node root;
+				byte[] data = null;
+				Node root = null;
 				
 				//GET BINARY FILES
 				try {   
 					FileInputStream binInputStream = new FileInputStream(binFilename);
-		            long fileSize = new File(binFilename).length();
-		            data = new byte[(int) fileSize];
-		            binInputStream.read(data);
-		            binInputStream.close();
+			        long fileSize = new File(binFilename).length();
+			        data = new byte[(int) fileSize];
+			        binInputStream.read(data);
+			        binInputStream.close();
+				} catch (FileNotFoundException FNFE) {
+					System.out.println("File not found - please try another path");
 				} catch (Exception ex) {
 					data = new byte[0];
 					ex.printStackTrace();
@@ -110,18 +119,23 @@ public class Main {
 					ObjectInputStream treeObjectIn = new ObjectInputStream(treeInputStream);
 					root = (Node) treeObjectIn.readObject();
 					treeObjectIn.close();
+				} catch (FileNotFoundException FNFE) {
+					System.out.println("File not found - please try another path");
 				} catch (Exception ex) {
 					ex.printStackTrace();
 					root = new Node(0,'0');
 				}
+				
 				try {
 					CodingData input = new CodingData(root, data);
-					Huffman.decode(null);
+					System.out.println("\nDecoded Data String: \n");
+					System.out.println(Huffman.decode(input));
 				} catch (Exception ex) {
 					ex.printStackTrace();
 				}
 				
 			} else if (ce.toUpperCase().equals("EXIT")) {
+				System.out.println("\n\n[INFO] Program stopped");
 				break;
 			}
 			System.out.println("\n-------------------------------------\n");

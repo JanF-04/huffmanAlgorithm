@@ -84,7 +84,15 @@ public class BitArray {
     }
 
     public byte remainder() {
-        return (byte) (8 - length % 8);
+    	int rem = (8 - length % 8);
+    	if (rem == 8) {
+    		rem = 0;
+    	} else if (rem > 8) {
+    		while (rem > 8) {
+    			rem = rem - 8;
+    		}
+    	}
+        return (byte) rem;
     }
     
 	public byte [] toByteArray() {
